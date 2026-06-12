@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>악녀 — 은화기숙학원 코멘터리북</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:       #2a4a38;
+    --green-light: #4a8c6a;
+    --green-dim:   #1a3028;
+    --red-dark:    #6b1a1a;
+    --red-accent:  #9b2a2a;
+    --cream:       #e8e0d0;
+    --dark:        #080808;
+    --dark-2:      #0d0d0d;
+    --dark-3:      #0a0f0c;
+    --text:        #c8c0b0;
+    --text-dim:    rgba(200,192,176,0.55);
+    --border:      rgba(42,74,56,0.3);
+    --border-red:  rgba(107,26,26,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 300;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  .section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 5rem 1.5rem;
+  }
+
+  /* ── 챕터 디바이더 ── */
+  .chapter-divider {
+    padding: 4rem 0 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .chapter-divider::after {
+    content: attr(data-bg);
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(4.5rem, 18vw, 11rem);
+    font-weight: 600;
+    color: rgba(42,74,56,0.07);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+    z-index: 0;
+  }
+  .chapter-divider > * { position: relative; z-index: 1; }
+  .chapter-divider::before {
+    content: '';
+    display: block;
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--green-light));
+    margin: 0 auto 2rem;
+    position: relative; z-index: 1;
+  }
+  .chapter-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.4em;
+    color: var(--green-light);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+  }
+  .chapter-title {
+    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+    font-weight: 600;
+    margin-top: 0.5rem;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── 동의 화면 ── */
+  .agree-wrap {
+    position: fixed; inset: 0;
+    z-index: 99999;
+    background: #060606;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+    transition: opacity 0.8s ease;
+  }
+  .agree-wrap.fadeout { opacity: 0; pointer-events: none; }
+  .agree-wrap.hidden  { display: none; }
+  .agree-box { max-width: 480px; width: 100%; text-align: center; }
+  .agree-logo {
+    font-size: 2rem; font-weight: 600;
+    color: var(--green-light);
+    letter-spacing: 0.25em;
+    margin-bottom: 0.4rem;
+  }
+  .agree-logo-sub {
+    font-size: 0.72rem; letter-spacing: 0.3em;
+    color: rgba(74,140,106,0.5);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-bottom: 2rem;
+  }
+  .agree-line { width: 40px; height: 1px; background: var(--green); margin: 0 auto 2rem; }
+  .agree-text {
+    font-size: 0.88rem;
+    color: rgba(200,192,176,0.65);
+    line-height: 2.1; margin-bottom: 2rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300; word-break: keep-all;
+  }
+  .agree-check-wrap {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.6rem; margin-bottom: 1.5rem; cursor: pointer;
+  }
+  .agree-check-wrap input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--green-light); cursor: pointer;
+  }
+  .agree-check-label {
+    font-size: 0.82rem; color: rgba(200,192,176,0.5);
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+  }
+  .agree-btn {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green-light);
+    font-size: 0.85rem; padding: 0.75rem 2.2rem;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    letter-spacing: 0.15em;
+    transition: background 0.3s ease, color 0.3s ease;
+    opacity: 0.35; pointer-events: none;
+  }
+  .agree-btn.active { opacity: 1; pointer-events: all; }
+  .agree-btn.active:hover { background: var(--green); color: var(--cream); }
+
+  /* ── 인트로 영상 ── */
+  .intro-video-wrap {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 1.2s ease;
+  }
+  .intro-video-wrap.fadeout { opacity: 0; pointer-events: none; }
+  .intro-video-wrap.hidden  { display: none; }
+  .intro-video { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── 검정 오버레이 ── */
+  .black-overlay {
+    position: fixed; inset: 0; z-index: 9998;
+    background: #000; pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .black-overlay.hidden { opacity: 0; }
+
+  /* ── 표지 ── */
+  .cover {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--dark);
+    position: relative; overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(42,74,56,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cover-img {
+    width: min(420px, 82vw);
+    opacity: 0; position: relative; z-index: 1;
+    transition: opacity 2s ease;
+    filter: drop-shadow(0 0 50px rgba(42,74,56,0.3));
+  }
+  .cover-img.visible { opacity: 1; }
+  .cover-scroll {
+    position: absolute; bottom: 2.5rem;
+    font-size: 0.68rem; letter-spacing: 0.4em;
+    color: rgba(200,192,176,0.3);
+    animation: pulse 2.8s ease-in-out infinite;
+    font-family: 'Noto Sans KR', sans-serif;
+    opacity: 0; transition: opacity 1s ease; z-index: 1;
+  }
+  .cover-scroll.visible { opacity: 1; }
+
+  /* ── 에피그래프 ── */
+  .epigraph {
+    background: #060a08;
+    padding: 8rem 1.5rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .epigraph::before {
+    content: '惡女';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(6rem, 25vw, 16rem);
+    font-weight: 600;
+    color: rgba(42,74,56,0.04);
+    pointer-events: none; white-space: nowrap;
+    letter-spacing: 0.1em;
+  }
+  .epigraph-title {
+    font-size: clamp(2rem, 6.5vw, 3.4rem);
+    font-weight: 600; color: var(--cream);
+    letter-spacing: 0.08em;
+    opacity: 0; animation: fadeUp 1.2s ease forwards 0.2s;
+    position: relative;
+  }
+  .epigraph-sub {
+    font-size: 0.85rem; color: var(--green-light);
+    letter-spacing: 0.35em; margin-top: 0.5rem;
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+    opacity: 0; animation: fadeUp 1.2s ease forwards 0.5s;
+    position: relative;
+  }
+  .epigraph-line {
+    width: 36px; height: 1px;
+    background: var(--green-light);
+    margin: 2.5rem auto;
+    opacity: 0; animation: fadeIn 1s ease forwards 0.8s;
+    position: relative;
+  }
+  .epigraph-text {
+    max-width: 520px; margin: 0 auto;
+    font-size: clamp(0.88rem, 2.3vw, 1rem);
+    color: var(--text-dim); line-height: 2.6;
+    opacity: 0; animation: fadeUp 1.2s ease forwards 1s;
+    position: relative; word-break: keep-all;
+  }
+  .epigraph-text em { color: var(--green-light); font-style: normal; }
+
+  /* ── 인물 소개 ── */
+  .chars-bg { background: var(--dark-2); padding: 2rem 0 5rem; }
+  .char-card {
+    display: grid; grid-template-columns: 140px 1fr;
+    gap: 2rem; align-items: start;
+    padding: 2.5rem 0;
+    border-bottom: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .char-card.visible { opacity: 1; transform: translateY(0); }
+  .char-photo {
+    width: 140px; height: 175px;
+    object-fit: cover; object-position: top;
+    filter: grayscale(20%) contrast(1.06) brightness(0.9);
+    border: 0.5px solid var(--border);
+    transition: filter 0.4s ease;
+    display: block;
+  }
+  .char-photo:hover { filter: grayscale(0%) contrast(1.04) brightness(0.95); }
+  .char-name {
+    font-size: 1.15rem; font-weight: 600;
+    color: var(--cream); margin-bottom: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+  .char-role {
+    font-size: 0.68rem; color: var(--green-light);
+    letter-spacing: 0.2em; margin-bottom: 1rem;
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+  }
+  .char-desc {
+    font-size: 0.88rem; color: var(--text-dim);
+    line-height: 2.1; word-break: keep-all;
+  }
+
+  /* ── 지도/공간 ── */
+  .map-bg { background: var(--dark-3); padding: 2rem 0 5rem; }
+  .map-img {
+    width: 100%; max-width: 680px;
+    display: block; margin: 2rem auto 0;
+    border: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .map-img.visible { opacity: 1; transform: translateY(0); }
+  .place-block {
+    padding: 2.5rem 0;
+    border-bottom: 0.5px solid var(--border);
+    opacity: 0; transform: translateX(-20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .place-block.visible { opacity: 1; transform: translateX(0); }
+  .place-name {
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--green-light); letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .place-name::before {
+    content: '';
+    display: inline-block; width: 20px; height: 1px;
+    background: var(--green-light); flex-shrink: 0;
+  }
+  .place-text {
+    font-size: 0.88rem; color: var(--text-dim);
+    line-height: 2.2; word-break: keep-all;
+  }
+
+  /* ── 스토리 본문 ── */
+  .story-bg { background: #f0ebe0; color: #1a1410; padding: 5rem 0; }
+  .story-bg .chapter-label  { color: var(--green); }
+  .story-bg .chapter-title  { color: #1a1410; }
+  .story-bg .chapter-divider::after { color: rgba(42,74,56,0.06); }
+  .story-bg .chapter-divider::before { background: linear-gradient(to bottom, transparent, var(--green)); }
+  .story-text {
+    font-size: clamp(0.88rem, 2.2vw, 0.98rem);
+    line-height: 2.3; color: #2a2018;
+    margin-bottom: 1.5rem;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    word-break: keep-all;
+  }
+  .story-text.visible { opacity: 1; transform: translateY(0); }
+  .story-dialogue {
+    margin: 1.4rem 0; padding: 0.9rem 1.3rem;
+    border-left: 2px solid var(--green);
+    background: rgba(42,74,56,0.06);
+    opacity: 0; transform: translateX(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .story-dialogue.visible { opacity: 1; transform: translateX(0); }
+  .story-speaker {
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--green); letter-spacing: 0.15em;
+    margin-bottom: 0.3rem;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .story-line { font-size: 0.92rem; color: #2a2018; line-height: 1.85; }
+  .story-quote {
+    font-size: 1rem; color: var(--green);
+    text-align: center; padding: 2.5rem 0;
+    letter-spacing: 0.05em; line-height: 2;
+    opacity: 0; transition: opacity 0.8s ease;
+    font-weight: 400; word-break: keep-all;
+  }
+  .story-quote.visible { opacity: 1; }
+  .story-narration {
+    background: rgba(42,74,56,0.08);
+    border: 0.5px solid rgba(42,74,56,0.2);
+    border-left: 2px solid var(--green);
+    padding: 1.3rem 1.6rem; margin: 2rem 0;
+    font-size: 0.88rem; color: #4a3a28;
+    line-height: 2.1;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    word-break: keep-all;
+  }
+  .story-narration.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── 해석집 ── */
+  .detail-bg { background: var(--dark-2); }
+  .detail-item {
+    padding: 3rem 0;
+    border-bottom: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .detail-item.visible { opacity: 1; transform: translateY(0); }
+  .detail-num {
+    font-size: 0.65rem; letter-spacing: 0.35em;
+    color: var(--green-light);
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+    margin-bottom: 0.3rem;
+  }
+  .detail-title {
+    font-size: 1.05rem; font-weight: 600;
+    color: var(--cream); margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+  }
+  .detail-img {
+    width: 100%; max-width: 500px;
+    display: block; margin: 0 auto 1.5rem;
+    border: 0.5px solid var(--border);
+  }
+  .detail-img-pair {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin-bottom: 1.5rem;
+    max-width: 500px; margin-left: auto; margin-right: auto;
+  }
+  .detail-img-pair img { width: 100%; border: 0.5px solid var(--border); }
+  .detail-text {
+    font-size: 0.88rem; color: var(--text-dim);
+    line-height: 2.2; word-break: keep-all;
+  }
+  .detail-text em { color: var(--red-accent); font-style: normal; }
+
+  /* ── Q&A ── */
+  .qa-bg { background: #050808; }
+  .qa-item {
+    padding: 2.8rem 0;
+    border-bottom: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .qa-item.visible { opacity: 1; transform: translateY(0); }
+  .qa-q {
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--cream); margin-bottom: 1.2rem;
+    line-height: 1.85; word-break: keep-all;
+  }
+  .qa-q::before { content: 'Q.  '; color: var(--green-light); }
+  .qa-a {
+    font-size: 0.88rem; color: var(--text-dim);
+    line-height: 2.2; padding-left: 1.1rem;
+    border-left: 1px solid var(--border);
+    word-break: keep-all;
+  }
+
+  /* ── 뒤표지 ── */
+  .back-cover {
+    background: #030606;
+    padding: 7rem 1.5rem;
+    text-align: center;
+    opacity: 0; transition: opacity 1.5s ease;
+    position: relative; overflow: hidden;
+  }
+  .back-cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(42,74,56,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .back-cover.visible { opacity: 1; }
+
+  /* 뒤표지 원형 장식 (CSS로 제작) */
+  .back-cover-circle {
+    width: min(200px, 48vw);
+    height: min(200px, 48vw);
+    margin: 0 auto 3rem;
+    position: relative; z-index: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #1a2e22 0%, #080e0a 70%);
+    border: 2px solid rgba(42,74,56,0.6);
+    box-shadow:
+      0 0 0 4px rgba(8,14,10,0.9),
+      0 0 0 6px rgba(42,74,56,0.25),
+      0 0 40px rgba(42,74,56,0.15);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.3rem;
+  }
+  .back-cover-circle-inner {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+    font-weight: 600; color: rgba(74,140,106,0.45);
+    letter-spacing: 0.15em; line-height: 1;
+  }
+  .back-cover-circle-sub {
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    color: rgba(74,140,106,0.25);
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  .back-cover-title {
+    font-size: 1rem; font-weight: 600;
+    color: rgba(200,192,176,0.4);
+    letter-spacing: 0.3em;
+    margin-bottom: 0.8rem;
+    position: relative; z-index: 1;
+  }
+  .back-copyright {
+    font-size: 0.68rem;
+    color: rgba(200,192,176,0.2);
+    letter-spacing: 0.22em;
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+    line-height: 2.4; position: relative; z-index: 1;
+  }
+
+  /* ── 목차 (데스크탑) ── */
+  .toc {
+    position: fixed; top: 50%; left: 1.5rem;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex; flex-direction: column; gap: 0.7rem;
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .toc.visible { opacity: 1; }
+  .toc-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    cursor: pointer; text-decoration: none;
+  }
+  .toc-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(200,192,176,0.18);
+    transition: all 0.3s ease; flex-shrink: 0;
+  }
+  .toc-label {
+    font-size: 0.65rem; color: rgba(200,192,176,0.2);
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+    letter-spacing: 0.1em; white-space: nowrap;
+    transition: all 0.3s ease;
+    max-width: 0; overflow: hidden; opacity: 0;
+  }
+  .toc-item:hover .toc-label,
+  .toc-item.active .toc-label { max-width: 120px; opacity: 1; }
+  .toc-item.active .toc-dot {
+    background: var(--green-light);
+    box-shadow: 0 0 6px rgba(74,140,106,0.5);
+    width: 7px; height: 7px;
+  }
+  .toc-item.active .toc-label { color: var(--green-light); }
+  .toc-item:hover .toc-dot    { background: rgba(200,192,176,0.45); }
+  .toc-item:hover .toc-label  { color: rgba(200,192,176,0.5); }
+
+  /* ── 목차 (모바일) ── */
+  .toc-toggle {
+    display: none;
+    position: fixed; top: 1.2rem; left: 1.2rem;
+    z-index: 1001;
+    background: rgba(6,10,8,0.88);
+    border: 0.5px solid var(--border);
+    border-radius: 3px; padding: 0.5rem 0.6rem;
+    cursor: pointer; flex-direction: column; gap: 4px;
+  }
+  .toc-toggle span {
+    display: block; width: 18px; height: 1px;
+    background: rgba(200,192,176,0.55);
+    transition: all 0.3s ease;
+  }
+  .toc-mobile {
+    display: none;
+    position: fixed; top: 0; left: -220px;
+    width: 200px; height: 100vh;
+    background: rgba(5,8,6,0.97);
+    border-right: 0.5px solid var(--border);
+    z-index: 1000; transition: left 0.3s ease;
+    padding: 5rem 1.5rem 2rem;
+    flex-direction: column; gap: 0.9rem;
+  }
+  .toc-mobile.open { left: 0; }
+  .toc-mobile-item {
+    font-size: 0.8rem; color: rgba(200,192,176,0.38);
+    font-family: 'Noto Sans KR', sans-serif; font-weight: 300;
+    letter-spacing: 0.08em; cursor: pointer;
+    padding: 0.4rem 0;
+    border-bottom: 0.5px solid rgba(42,74,56,0.12);
+    transition: color 0.3s ease;
+  }
+  .toc-mobile-item.active { color: var(--green-light); font-weight: 400; }
+  .toc-backdrop {
+    display: none; position: fixed; inset: 0;
+    z-index: 999; background: rgba(0,0,0,0.55);
+  }
+  .toc-backdrop.open { display: block; }
+
+  /* ── 애니메이션 ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.28; } 50% { opacity: 0.65; }
+  }
+
+  /* ── 반응형 ── */
+  @media (max-width: 768px) {
+    .toc        { display: none; }
+    .toc-toggle { display: flex; }
+    .toc-mobile { display: flex; }
+  }
+  @media (max-width: 560px) {
+    .char-card { grid-template-columns: 1fr; }
+    .char-photo { width: 100%; height: 240px; object-position: top center; }
+    .detail-img-pair { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 데스크탑 목차 -->
+<nav class="toc" id="toc">
+  <a class="toc-item" data-target="sec-characters"><span class="toc-dot"></span><span class="toc-label">등장인물</span></a>
+  <a class="toc-item" data-target="sec-world"><span class="toc-dot"></span><span class="toc-label">지도/공간</span></a>
+  <a class="toc-item" data-target="sec-story"><span class="toc-dot"></span><span class="toc-label">이야기</span></a>
+  <a class="toc-item" data-target="sec-detail"><span class="toc-dot"></span><span class="toc-label">해석집</span></a>
+  <a class="toc-item" data-target="sec-qa"><span class="toc-dot"></span><span class="toc-label">Q&amp;A</span></a>
+</nav>
+
+<!-- 모바일 햄버거 -->
+<button class="toc-toggle" id="tocToggle" aria-label="목차 열기">
+  <span></span><span></span><span></span>
+</button>
+<nav class="toc-mobile" id="tocMobile">
+  <a class="toc-mobile-item" data-target="sec-characters">등장인물</a>
+  <a class="toc-mobile-item" data-target="sec-world">지도 / 공간설명</a>
+  <a class="toc-mobile-item" data-target="sec-story">이야기 속으로</a>
+  <a class="toc-mobile-item" data-target="sec-detail">해석집</a>
+  <a class="toc-mobile-item" data-target="sec-qa">Q&amp;A</a>
+</nav>
+<div class="toc-backdrop" id="tocBackdrop"></div>
+
+<!-- 검정 오버레이 -->
+<div class="black-overlay" id="blackOverlay"></div>
+
+<!-- 동의 화면 -->
+<div class="agree-wrap" id="agreeWrap">
+  <div class="agree-box">
+    <p class="agree-logo">악  녀</p>
+    <p class="agree-logo-sub">은화기숙학원</p>
+    <div class="agree-line"></div>
+    <p class="agree-text">
+      해당 내용은 테마를 다 이용한 고객님을 위한 설명 사이트입니다.<br><br>
+      스포일러를 당할 수 있으며 위 내용, 주소를 유출할 시<br>
+      법적인 책임을 물을 수 있습니다.<br><br>
+      이에 동의하십니까?
+    </p>
+    <label class="agree-check-wrap">
+      <input type="checkbox" id="agreeCheck">
+      <span class="agree-check-label">위 내용을 확인하였으며 이에 동의합니다.</span>
+    </label>
+    <button class="agree-btn" id="agreeBtn">동의하고 입장</button>
+  </div>
+</div>
+
+<!-- 인트로 영상 (나중에 src="images/intro.mp4" 로 교체) -->
+<div class="intro-video-wrap hidden" id="introWrap">
+  <video class="intro-video" id="introVideo" src="images/intro.mp4" autoplay muted playsinline></video>
+</div>
+
+<!-- 표지 -->
+<section class="cover">
+  <img class="cover-img" id="coverImg" src="images/1.gif" alt="악녀 코멘터리북 표지">
+  <p class="cover-scroll" id="coverScroll">▾ &nbsp; scroll</p>
+</section>
+
+<!-- 에피그래프 -->
+<section class="epigraph">
+  <p class="epigraph-title">악  녀</p>
+  <p class="epigraph-sub">은화기숙학원</p>
+  <div class="epigraph-line"></div>
+  <p class="epigraph-text">
+    진실은 지워지고, 기억은 왜곡된다.<br>
+    가장 가까운 곳에서 시작되는 공포.<br>
+    익숙한 공간이 낯설게 느껴지는 순간, 당신의 안전한 일상은 무너진다.<br>
+    추악한 사실을 잊은 자, 그리고 그 진실을 밝히려는 자.<br>
+    믿었던 모든 것이 흔들리고, 남은 건 끝없는 불신과 두려움뿐.<br>
+    <em>어둠 속 숨겨진 진실은 깨어났다.</em>
+  </p>
+</section>
+
+<!-- 등장인물 -->
+<section class="chars-bg" id="sec-characters">
+  <div class="section">
+    <div class="chapter-divider" data-bg="CHARACTERS">
+      <p class="chapter-label">Characters</p>
+      <h2 class="chapter-title">등장인물 안내서</h2>
+    </div>
+
+    <div class="char-card">
+      <img class="char-photo" src="images/char_somin.png" alt="조소민">
+      <div>
+        <p class="char-name">조소민</p>
+        <p class="char-role">피해자</p>
+        <p class="char-desc">은화기숙학원의 재학생으로, 민유정과 이화정의 끊임없는 괴롭힘 속에서 끝내 마음의 문을 닫은 소녀. 경비원 아저씨만이 손주처럼 그녀를 아꼈지만, 그 따뜻함마저 붙잡지 못한 채 세상과 작별하게 된다.</p>
+      </div>
+    </div>
+
+    <div class="char-card">
+      <img class="char-photo" src="images/char_guard.png" alt="경비원">
+      <div>
+        <p class="char-name">경비원</p>
+        <p class="char-role">복수자</p>
+        <p class="char-desc">은화기숙학원의 경비원으로, 학교에서 유일하게 소민을 따뜻하게 챙겨준 인물. 그는 소민을 괴롭히던 민유정과 이화정에게 복수하기 위해, 자신의 손으로 부적을 제작해 죽은 소녀의 영혼을 불러내고 마침내 복수를 완성한다. 자신의 양심보다 소민을 향한 연민이 앞섰던, 슬프도록 인간적인 복수자.</p>
+      </div>
+    </div>
+
+    <div class="char-card">
+      <img class="char-photo" src="images/char_yujung.png" alt="민유정">
+      <div>
+        <p class="char-name">민유정</p>
+        <p class="char-role">가해자</p>
+        <p class="char-desc">은화기숙학원의 학생으로, 아무런 이유 없이 조소민을 괴롭혀 깊은 상처를 남긴 인물. 소민이 세상을 떠난 뒤에도 죄책감 하나 없이 일상을 이어가던 그녀는, 결국 경비원이 꾸민 알 수 없는 기묘한 사건 속에서 자신이 저질렀던 잔혹함의 대가를 맞이하게 된다.</p>
+      </div>
+    </div>
+
+    <div class="char-card">
+      <img class="char-photo" src="images/char_hwajung.png" alt="이화정">
+      <div>
+        <p class="char-name">이화정</p>
+        <p class="char-role">방관자</p>
+        <p class="char-desc">민유정의 절친이자, 조소민을 괴롭히던 일에 동조하고 방관했던 은화기숙학원의 학생. 그 날, 어딘가에서 들려오는 익숙한 목소리를 따라가다 흔적도 없이 사라진다. 그날 이후 그녀의 행방은 누구에게도 알려지지 않았고, 신문에는 단 한 줄의 실종 기사만이 남았다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 지도/공간 -->
+<section class="map-bg" id="sec-world">
+  <div class="section">
+    <div class="chapter-divider" data-bg="WORLD">
+      <p class="chapter-label">World</p>
+      <h2 class="chapter-title">지도 / 공간설명</h2>
+    </div>
+
+    <img class="map-img" src="images/map.png" alt="은화마을 지도">
+
+    <div class="place-block">
+      <p class="place-name">경찰서 취조실</p>
+      <p class="place-text">영화의 시작과 끝에 등장하는 취조실입니다. 이 곳에서 민유정이 사건을 진술하며 과거의 이야기가 시작되고, 영화 후반부에서 그녀는 경찰에게 신고하지만, 그 경찰마저 사람의 모습을 한 악귀였음이 드러납니다. 결국 경찰서에서 마지막 복수를 당하며 이야기는 막을 내립니다.</p>
+    </div>
+    <div class="place-block">
+      <p class="place-name">화장실</p>
+      <p class="place-text">조소민이 생을 마감한 장소입니다. 경비원은 유정과 화정이 스스로 소민의 영혼을 불러오도록 유도하기 위해, 화장실에 조소민의 신분증과 부적을 붙여두었습니다. 또 순찰을 가장해 화장실을 드나들며 그들을 감시했고, 일부러 열쇠를 떨어뜨려 두 사람이 자연스럽게 조소민의 물건을 손에 넣도록 유도했습니다.</p>
+    </div>
+    <div class="place-block">
+      <p class="place-name">민유정 방 (101호)</p>
+      <p class="place-text">기숙학원 101호에 위치한 민유정의 개인 기숙사 방입니다. 과거 회상이 시작되는 장소로, 유정의 방에 놀러온 화정과 유정은 평소처럼 공부를 마친 뒤 잠자리에 들 준비를 하던 중, 어딘가에서 들려오는 알 수 없는 비명을 듣게 됩니다. 이를 계기로 방을 나선 두 사람은 경비원이 설계한 계략 속으로 점점 빠져들게 됩니다.</p>
+    </div>
+    <div class="place-block">
+      <p class="place-name">명신신당</p>
+      <p class="place-text">경비원이 복수 계획을 완성시키는 장소이자, 모든 의식의 근원이 되는 공간입니다. 그는 조소민의 영혼을 불러내기 위해 무당에게 의뢰했으나 거절당하자, 새벽에 몰래 침입해 부적 제작에 필요한 물건을 훔칩니다. 이후 민유정을 속이기 위해 가짜 의뢰서와 신당 일지를 남겨두었고, 훗날 유정은 이 단서를 따라 신당을 방문하게 됩니다.</p>
+    </div>
+    <div class="place-block">
+      <p class="place-name">세탁소</p>
+      <p class="place-text">마을의 오래된 세탁소입니다. 세탁소 주인은 한 달 전, 조소민이 피가 묻은 옷을 맡긴 뒤 찾아가지 않아 이상하게 여겼습니다. 이후 민유정은 조소민의 영혼을 없애기 위해, 경비원이 조작한 의뢰서를 단서로 삼아 이곳에 몰래 침입하게 됩니다.</p>
+    </div>
+    <div class="place-block">
+      <p class="place-name">소각실</p>
+      <p class="place-text">조소민의 명찰이 태워지는 장소이자, 영혼을 부르기 위한 의식의 마지막 단계가 이루어지는 공간입니다. 유정은 '죽은 자의 물건을 태워 제단에 올리라'는 조작된 의뢰서를 따라 이곳에서 명찰을 불태우지만, 그것은 퇴마가 아닌 '부름'의 의식이었습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 이야기 속으로 -->
+<section class="story-bg" id="sec-story">
+  <div class="section">
+    <div class="chapter-divider" data-bg="STORY">
+      <p class="chapter-label">Story</p>
+      <h2 class="chapter-title">이야기 속으로</h2>
+    </div>
+
+    <p class="story-text">은화 마을에서 수많은 영재를 배출해 온 은화 기숙학원. 그러나 학원 내에서 벌어지는 폭력에 대해서는 소문이라도 날까 철저히 함구했고, 오직 실적 외에는 관심조차 두지 않았다. 그 폭력의 중심에는 학생 민유정이 있었다. 유정은 일상처럼 화장실에서 조소민을 괴롭혔고, 친구 이화정은 마치 구경거리라도 난 듯 웃기만 했다.</p>
+
+    <p class="story-text">조소민이 고민을 들어주고 힘이 되어주던 경비원에게 억지로라도 마지막 웃음을 지어 보이던 그날, 경비원은 순찰 중에 화장실에서 그녀의 싸늘한 주검을 발견하게 된다.</p>
+
+    <p class="story-text">이후 경비원은 조소민이 당해온 일과 그 주동자가 누구인지 알고 있는 유일한 사람으로서 가만히 있을 수 없었다.</p>
+
+    <p class="story-quote">"내가 지켜줬어야 했는데…"</p>
+
+    <p class="story-text">그는 그녀를 지켜주지 못했다는 죄책감 속에 잠들었다 깨어나기를 반복했다. 어느 날, 그는 발신인이 없는 의뢰서 한 통을 써서 '명신신당'으로 보냈다.</p>
+
+    <div class="story-narration">[악귀를 불러내고 싶습니다. 오해는 말아주세요. 저는 이를 나쁜 일에 사용하려는 것이 아니라 이로운 목적을 가지고 있습니다. 악귀를 불러낼 수 있는 부적을 제작하고 싶어 무당님의 도움이 필요합니다.]</div>
+
+    <p class="story-text">며칠 뒤, 답장이 도착했다.</p>
+
+    <div class="story-narration">[이 의뢰는 매우 위험한 일입니다. 악귀란 쉽게 다룰 수 있는 것이 아니며, 어떤 이로운 이유로든 악귀는 이 세상에 있어선 안 될 존재입니다. 저는 절대 도와드릴 수 없습니다.]</div>
+
+    <p class="story-text">그는 답장을 여러 번 읽었지만, 포기할 수 없었다. 밤마다 기숙학원 근처의 낡은 헌책방을 돌며 귀신, 부적, 의식에 관한 책을 찾아다녔다. 어둠 속에서 책을 읽고 부적을 태우며 직접 의식을 치러보기도 했다. 그는 마침내 악귀를 불러오는 부적의 구조를 알아냈고, 무당집에 몰래 숨어들었다. 그곳에서 부적에 필요한 물건과 종이, 경면주사를 훔쳤다.</p>
+
+    <p class="story-text">며칠 뒤, 그는 기숙학원 화장실 벽에 자신이 만든 부적을 붙여두고, 다른 학원생들이 오지 못하도록 자물쇠를 단단히 걸어 잠갔다. 학생 대부분이 집으로 돌아간 명절날, 재실(남아 있는 학생) 공고를 유심히 보던 그는 깊은 생각에 잠겨있었다. 남아 있는 사람은 단 두 명, 유정과 화정. 바로 소민을 괴롭히던 두 소녀였다.</p>
+
+    <p class="story-text">그날 밤, 두 사람은 공부를 마치고 잠자리에 들려는 순간 불이 꺼지고 복도 끝에서 비명소리가 들려왔다. 섬뜩한 비명소리에 이끌려 아무도 없는 복도를 서성이는 그때, 드르륵— 쾅. 경비실의 창문이 열리더니 경비원이 그들을 말없이 바라본 후 어둠 속으로 사라졌다.</p>
+
+    <p class="story-quote">"경비 아저씨는 이 비명소리가 뭔지 아시지 않을까?"</p>
+
+    <p class="story-text">그가 닫고 간 창문을 열어보자 거울에 비친 출입 버튼이 보였다. 그 버튼을 눌러 경비실에 들어온 유정과 화정은 우연히 경비원이 쓴 일지를 보게 된다. 비명소리가 들렸던 화장실에 관한 이야기, 그리고 그곳에 붙어 있던 부적들… 잠에 들지 못한 유정과 화정은 경비원이 기숙학원을 출입했던 방식으로 문을 열고 바깥으로 나갔다.</p>
+
+    <p class="story-text">오래되어 깜빡이는 간판과 가로등… 잘 보이지 않는 어둠 속에서 게시판을 보고 명신신당의 전단지를 발견한다. 전단지를 들고 무당집으로 가려는 순간, 누군가의 시선에 고개를 돌렸다. 그녀들은 자신들을 쳐다보는 그 눈에 너무나도 놀라 뒷걸음질 쳤고, 그때 무당집 문이 열리며 안으로 들어서게 된다.</p>
+
+    <p class="story-text">아무도 없는 무당집을 살펴보다 우연히 무당이 받았던 의뢰서를 발견하게 된다. 의뢰서를 읽는 중 한 의뢰서가 눈에 띄었다.</p>
+
+    <div class="story-narration">[자꾸 귀신 소리가 들립니다. 그 소리를 없애고 싶습니다.]</div>
+
+    <p class="story-text">'우리 같은 사람이 또 있나 보다…' 유정과 화정은 속으로 생각했다. 그들은 그 밑에 붙은 답변을 읽었다.</p>
+
+    <div class="story-narration">[당신을 괴롭히는 이의 옷가지가 필요합니다.]</div>
+
+    <p class="story-text">그다음에는 세탁소로 출입할 수 있는 방법이 자세하게 적혀있었다. 정상적인 출입 방법이 아닌 것을 알려준 것이 의아했지만, 당장 이 비명소리를 얼른 없애고 싶은 마음에 무작정 세탁소로 향했다.</p>
+
+    <p class="story-text">문을 열자, 오래된 먼지 냄새와 세제 특유의 희미한 단내가 섞여 흘러나왔다. 그 순간 천장 위, 조명 바로 위쪽에서 누군가의 발이 매달려 있는 것처럼 보였다. 유정은 눈을 크게 떴다. 다시 깜빡이며 올려다보았을 때, 그곳에는 아무것도 없었다.</p>
+
+    <p class="story-quote">"…잘못 본 거겠지."</p>
+
+    <p class="story-text">둘은 억지로 웃어보려 했지만, 등에 흐르는 식은땀은 멈추지 않았다. 세탁소 안을 조심스레 뒤지던 중, 화정이 세탁기의 전원 레버를 발견했다. '툭' 하는 소리와 함께 전원이 켜졌다. 윙— 세탁기가 돌아가기 시작했다. 그러나 곧, 투명해야 할 물 대신 붉은 액체가 천천히 고여 올라오기 시작했다. 두 사람은 소리를 내지 못한 채 뒤로 물러났다. 숨이 막히는 듯한 정적 속에서, '덜컥—' 하는 소리가 울렸다. 구석의 오래된 옷장 문이 저절로 열려 있었다. 그 안에는 하얀 셔츠 한 벌이 가지런히 걸려 있었고, 빛바랜 형광등 불빛 아래, 셔츠에 말라붙은 적갈색 얼룩이 선명히 번져 있었다.</p>
+
+    <p class="story-text">그녀들은 그 옷을 보는 순간 소민의 것임을 알았다. 소민을 화장실에서 몰아세우던 날, 그녀의 옷에 묻은 피의 자국과 똑같은 자리였다. 공포에 질린 유정과 화정은 허겁지겁 무당방에 들고 가 옷을 걸어 놓았다. 그러자 '덜컥' 서랍이 열리며 답변서가 보였다.</p>
+
+    <div class="story-narration">[그자가 죽은 곳으로 가라. 그곳에서 그것이 남긴 물건을 불태워야 한다. 그 재를 여기로 다시 가져와, 제단 위에 올리고 기도를 드려라.]</div>
+
+    <p class="story-text">그 글을 읽고 그들이 향한 곳은 기숙학원 화장실이었다. 소민이 생을 마감했던 곳. 바닥의 타일은 여전히 축축했고, 냄새는 사라지지 않았다. 화장실을 뒤지던 둘은 또다시 누군가 자신들을 쳐다보는 눈과 마주친다. 그 눈의 주인은 경비원.</p>
+
+    <p class="story-quote">"거기 누구야!"</p>
+
+    <p class="story-text">놀란 화정과 유정은 급하게 화장실 칸 안으로 몸을 숨겼다. 전에는 없었던 붉은 글씨가 벽에 빼곡히 적혀 있었다. 낯설지 않은 문장과 단어. 그것은 모두 본인들이 소민에게 했던 말이었다. 그때 경비원이 들어오는 소리가 들리더니 화장실을 살펴보기 시작한다. 둘은 동시에 몸을 굳혔다. 바로 그때, 짤랑— 무언가가 떨어지는 소리가 들렸다. 잠시 후 경비원은 그대로 나갔다. 안심하던 그때, 천장에서 누군가의 잘린 머리가 떨어지는 모습이 보였다. 눈을 감았다 떴을 때, 그것은 사라져 있었다.</p>
+
+    <p class="story-text">공포에 질린 둘은 문을 열고 나와 경비원이 떨어뜨린 것을 확인했다. '경비실'이라고 적힌 열쇠였다. 그 순간 '설마' 하는 생각을 한 유정은 열쇠로 자물쇠를 열어봤다.</p>
+
+    <p class="story-text">딸깍— 너무나도 쉽게 열린 서랍. 안에는 죽은 후에는 보이지 않던 소민의 학생증이 있었다. 그때 머릿속에 떠오른 문장. '성불에 필요한 마지막 물건' 유정은 홀린 듯이 소각실로 향했다. 공포가 한계에 다다랐는지 유정은 무표정한 얼굴로 기름을 붓고 소각로를 작동했다. 학생증이 타며 뿌연 연기가 퍼졌다.</p>
+
+    <p class="story-text">그녀들은 남은 재를 무당집으로 가지고 돌아갔다. 재단 위에 재를 올려두는 그 순간, 방 안에 감도는 공기가 달라지기 시작했다. 부처상의 목이 천천히 갈라지고, 갈라진 곳에서 피가 솟구쳤다. 그때, 화정의 귓가에 목소리가 들렸다.</p>
+
+    <div class="story-dialogue">
+      <p class="story-speaker">목소리</p>
+      <p class="story-line">"화정아… 할 말이 있어. 혼자 여기로 와서 이야기 좀 나눌래?"</p>
+    </div>
+
+    <p class="story-text">그 목소리에 화정은 뒤를 돌아보았고, 마치 홀린 듯 소리가 나는 방향으로 걸어갔다.</p>
+
+    <div class="story-dialogue">
+      <p class="story-speaker">민유정</p>
+      <p class="story-line">"야, 어디 가!!!!"</p>
+    </div>
+
+    <p class="story-text">울며 부르짖는 유정의 외침은 들리지 않는지 화정의 모습은 어둠 속으로 사라졌다. 잠시 뒤, 사라진 방향에서 짧고 날 선 비명이 울렸다. 유정은 그 자리에서 굳어버려 움직이려 해도 몸이 말을 듣지 않았다. 그때, 신당 안쪽에서 우비를 쓴 누군가가 천천히 모습을 드러냈다.</p>
+
+    <p class="story-text">유정의 숨이 턱 막혔다. 그리고 바로 그 순간— 저 멀리 화정의 목소리가 들렸다. 다급하게 기숙학원으로 돌아오라고 외치는 소리였다. 생각할 틈도 없이 유정은 그대로 달리기 시작했다. 뒤에서 거칠고 빠른 발소리가 점점 가까이 들렸다. 비명을 찢어낼 듯 내지르며 기숙학원 건물 안으로 뛰어들었다. 문을 급히 닫고, 겁에 질려 자신의 방으로 뛰어 들어가 문을 잠갔다. 그때 모니터에 있어서는 안 될 메시지가 보였다.</p>
+
+    <div class="story-narration">
+      [나 화정이랑 놀고 있어 같이 놀래?]<br>
+      [놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자 놀자]
+    </div>
+
+    <p class="story-text">죽은 소민에게서 끝없이 오는 메시지였다. 유정은 떨리는 손으로 경찰에 전화를 걸었다. 그리고 그 순간을 마지막으로 기억은 끊겼다.</p>
+
+    <p class="story-text">취조실. 형광등이 미세하게 흔들렸다.</p>
+
+    <div class="story-dialogue">
+      <p class="story-speaker">민유정</p>
+      <p class="story-line">"그렇게 된 거예요."</p>
+    </div>
+    <div class="story-dialogue">
+      <p class="story-speaker">형사</p>
+      <p class="story-line">"그러니까 당신을 괴롭힌 사람이 누구라고요?"</p>
+    </div>
+    <div class="story-dialogue">
+      <p class="story-speaker">민유정</p>
+      <p class="story-line">"이 사람! 조소민! 조소민이라니까요!"</p>
+    </div>
+    <div class="story-dialogue">
+      <p class="story-speaker">형사</p>
+      <p class="story-line">"조소민 맞아요? 민유정, 이화정… 당신들이 아니고?"</p>
+    </div>
+
+    <p class="story-text">유정의 얼굴이 일그러졌고 몸을 떨었다. 그리고 형사는 비명 같은 웃음소리를 낸다.</p>
+
+    <p class="story-quote">"조소민! 조소민! 조소민!!!!!!"</p>
+
+    <p class="story-text">그 순간, 취조실 문이 열리며 누군가 유정을 덮쳤다. 빛이 꺼졌다. 모든 것은 침묵 속으로 가라앉았다.</p>
+
+    <p class="story-text">은화 기숙학원은 다시 평온했다. 마치 아무 일도 없었던 것처럼. 그러나 그 평온은, 늘 그렇듯 보이지 않는 무관심 위에 세워진 것이었다.</p>
+  </div>
+</section>
+
+<!-- 해석집 -->
+<section class="detail-bg" id="sec-detail">
+  <div class="section">
+    <div class="chapter-divider" data-bg="DETAIL">
+      <p class="chapter-label">Detail</p>
+      <h2 class="chapter-title">해석집</h2>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">01</p>
+      <p class="detail-title">기숙학원 사건이 실린 신문기사</p>
+      <img class="detail-img" src="images/detail_01.png" alt="신문기사">
+      <p class="detail-text">취조실에서 발견된 뉴스 기사에 따르면, <em>경비원이 화장실에서 조소민의 사체를 최초로 발견</em>한 것으로 기록되어 있습니다. 기사에는 그녀가 평소 건강상 특별한 문제가 없었다는 증언도 함께 실려 있어, 그녀의 사망 원인은 자살 또는 타살일 가능성이 제기되며 이야기가 시작됩니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">02</p>
+      <p class="detail-title">기숙학원 학생명부</p>
+      <img class="detail-img" src="images/detail_02.png" alt="학생명부">
+      <p class="detail-text">은화기숙학원의 기숙사 학생명부 입니다. 명부를 보면 <em>조소민, 민유정, 이화정이 모두 이곳에 재학중</em>이라는 사실을 알 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">03</p>
+      <p class="detail-title">민유정 방에서 발견된 소민의 소지품</p>
+      <img class="detail-img" src="images/detail_03.png" alt="소민의 빗">
+      <p class="detail-text">민유정의 서랍 속에서 '소민'이라고 적힌 조소민의 빗이 발견되었습니다. 이는 <em>민유정이 조소민에게 빼앗은 소지품</em>으로, 이를 통해 평소 괴롭힘을 당하는 소민의 상황을 유추해볼 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">04</p>
+      <p class="detail-title">학원폭력 관련 공지문</p>
+      <img class="detail-img" src="images/detail_04.png" alt="학원폭력 공지문">
+      <p class="detail-text">경비실에 게시된 은화기숙학원의 공지사항 문서에는 <em>최근 기숙학원 내 학교폭력이 잦다는 내용</em>이 포함되어 있습니다. 특히 화장실 점검을 강조한 부분으로 미루어, 평소 민유정과 이화정이 화장실에서 조소민을 자주 괴롭혔음을 유추할 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">05</p>
+      <p class="detail-title">화장실 안 낙서</p>
+      <img class="detail-img" src="images/detail_05.png" alt="화장실 낙서">
+      <p class="detail-text">화장실 칸 안 벽에는 빨간 글씨로 조롱과 욕설이 적혀 있습니다. 이는 <em>조소민이 민유정과 이화정에게 실제로 들었던 말</em>들을 반영한 것으로, 그녀가 화장실에서 당한 괴롭힘의 상황을 시각적으로 표현하기 위한 연출입니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">06</p>
+      <p class="detail-title">소민이 경비원에게 준 쪽지</p>
+      <img class="detail-img" src="images/detail_06.png" alt="소민의 쪽지">
+      <p class="detail-text">경비실 경비일지가 보관된 보관함에 붙어 있던 메모지입니다. 이를 통해 <em>조소민과 경비원의 유대관계</em>를 엿볼 수 있습니다. 조소민은 평소 경비원에게만 속마음을 털어놓으며, 서로에게 위로가 되는 관계였음을 알 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">07</p>
+      <p class="detail-title">세탁일지</p>
+      <img class="detail-img" src="images/detail_07.png" alt="세탁일지">
+      <p class="detail-text">세탁일지를 보면 <em>조소민이라는 학생이 피가 묻은 옷을 맡겼다</em>라고 되어있습니다. 그 옷은 민유정에게 괴롭힘을 당하던 중 묻은 조소민의 피로, 이후 이 옷은 유정이 '죽은 자의 물건'을 찾는 중요한 단서가 됩니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">08</p>
+      <p class="detail-title">경비원이 조작한 답변서</p>
+      <img class="detail-img" src="images/detail_08.png" alt="조작된 답변서">
+      <p class="detail-text">무당의 답변서 위에는 경비원의 글씨가 덧씌워져 있습니다. 이는 <em>경비원이 기존에 무당이 작성한 답변 내용을 지우고, 그 위에 새로 써서 조작한 문서</em>입니다. 그는 이 문서를 이용해 민유정과 이화정이 스스로 악귀를 불러오도록 유도했습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">09</p>
+      <p class="detail-title">명신신당 기록장</p>
+      <img class="detail-img" src="images/detail_09.png" alt="명신신당 기록장">
+      <p class="detail-text">명신신당의 예약명단에는 19시에 익명의 사람이 부적 제작 방법을 알려 달라고 요청한 기록이 있습니다. <em>이 익명의 인물은 바로 경비원</em>입니다. 마지막 장에는 경비원이 민유정과 이화정을 속이기 위해 무당인 척 작성한 글이 포함되어 있으며, 글씨체가 무당의 글씨체가 아닌 경비원의 글씨체임을 확인할 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">10</p>
+      <p class="detail-title">경찰 신고 접수증</p>
+      <img class="detail-img" src="images/detail_10.png" alt="경찰 신고접수증">
+      <p class="detail-text">무당집 서랍 안에 보관된 문서로, <em>누군가 부적 제작에 필요한 도구를 훔쳐갔다는 내용의 경찰 신고서</em>입니다. 이 사건의 범인은 경비원이며, 무당이 이를 경찰에 신고한 기록임을 알 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">11</p>
+      <p class="detail-title">경비원이 무당에게 의뢰한 의뢰서</p>
+      <img class="detail-img" src="images/detail_11.png" alt="의뢰서">
+      <p class="detail-text">경비실 열쇠보관함에서 발견된 의뢰서는 경비원이 명신신당의 무당에게 의뢰한 내용이 들어있습니다. 내용에는 <em>경비원이 귀신을 불러내고자 한 요청과, 이에 대해 무당이 위험하다는 이유로 거절한 답변</em>이 포함되어 있습니다. 경비원은 이 답변을 받고, 무당의 도움 없이 스스로 영혼을 불러내기로 결심합니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">12</p>
+      <p class="detail-title">경비원이 혼자 작성한 위조 의뢰서</p>
+      <img class="detail-img" src="images/detail_12.png" alt="위조 의뢰서">
+      <p class="detail-text">명신신당에서 발견된 의뢰서 중 하나는 글씨체가 경비원과 일치합니다. 다른 의뢰서의 답변자는 모두 동일한 글씨체를 사용하지만, 이 의뢰서는 무당의 글씨체가 아닌 경비원의 글씨체입니다. 즉, 무당이 작성한 것이 아니라 <em>경비원이 민유정을 속이기 위해 위조한 의뢰서</em>임을 알 수 있습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">13</p>
+      <p class="detail-title">경비실에 있던 부적과 민속신앙에 대한 책</p>
+      <img class="detail-img" src="images/detail_13.png" alt="무속신앙 서적">
+      <p class="detail-text">경비실 위쪽 책장에는 <em>부적 제작과 관련된 서적</em>들이 꽂혀 있습니다. 경비원은 무당에게 의뢰를 거절당한 뒤, 스스로 부적 제작법을 익혀 조소민의 영혼을 불러냈습니다. 이 책들은 그의 치밀한 준비 과정과 집념을 보여주는 연출 소품입니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">14</p>
+      <p class="detail-title">경비일지</p>
+      <img class="detail-img" src="images/detail_14.png" alt="경비일지">
+      <p class="detail-text">경비원의 일지를 보시면, '부적을 누가 붙였는가'에 대해 의문을 적어둔 내용이 나옵니다. 하지만 다른 페이지를 보면, <em>그 부적을 붙인 사람이 바로 경비원 본인</em>이라는 사실을 확인할 수 있습니다. 윗쪽 페이지는 <em>유정이 읽을 것을 예상하고 일부러 꾸며 쓴 내용</em>이며, 펜으로 지운 흔적은 유정에게 들키지 않기 위한 삭제 흔적입니다. 일지의 마지막 페이지를 안 지우고 비상열쇠함에 붙여뒀습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">15</p>
+      <p class="detail-title">경비실 서랍 속 부적용품</p>
+      <img class="detail-img" src="images/detail_15.png" alt="부적용품">
+      <p class="detail-text">경비원의 서랍에서는 붓과 부적용 종이를 발견하셨나요? <em>바로 신당에서 훔친 부적을 쓰기 위한 재료들</em>입니다. 화장실에 붙어 있던 부적들은 경비원이 직접 제작한, 귀신을 불러내는 부적입니다. 그 중 빨간 부적은 떼어내는 순간 효력이 발동되며, 민유정과 이화정은 경비원의 계획대로 그것을 떼어내고 말았습니다.</p>
+    </div>
+
+    <div class="detail-item">
+      <p class="detail-num">16</p>
+      <p class="detail-title">무당집 관 안의 옷걸이</p>
+      <img class="detail-img" src="images/detail_16.png" alt="관 안의 옷걸이">
+      <p class="detail-text">옷을 들고 무당집에 돌아왔을 때, 관 안의 빛에 비친 <em>옷걸이의 그림자는 마치 목을 매는 줄처럼</em> 보입니다. 이는 조소민의 마지막 순간을 떠오르게 하는 연출입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Q&A -->
+<section class="qa-bg" id="sec-qa">
+  <div class="section">
+    <div class="chapter-divider" data-bg="Q&A">
+      <p class="chapter-label">Interview</p>
+      <h2 class="chapter-title">Q &amp; A</h2>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">3호점 오픈과 함께 첫 영화를 선보이셨습니다. 준비 과정에서 새로운 시도나 시행착오가 있었다면 어떤 것이었나요?</p>
+      <p class="qa-a">사실 이번 매장을 기획하면서 가장 큰 변화는 단순히 새로운 시도를 했다기보다는, 제작 성향 자체가 전환된 것이라고 말씀드리고 싶습니다. 이전 1, 2호점에서는 '내가 만들고 싶고, 또 내가 재밌는 테마'를 만드는 것이 최우선이었다면, 3호점에서는 '플레이어가 정말 재밌어하고 흥미로워 할 만한 요소'가 무엇일지에 대한 고민이 가장 크게 작용했습니다. 저 역시 방탈출을 즐기는 플레이어이지만, '나와 같은 플레이어라면 당연히 좋아할 것이다'라는 오만한 생각보다는, 보다 다수의 플레이어가 공감하고 흥미를 느낄 수 있는 이야기와 연출을 상상하고 고민하는 데 많은 시간을 할애했습니다. 물론, 이 과정에서 세부적인 연출이나 기술적인 측면에서 자잘한 시행착오를 많이 겪었지만, 결국 새로운 시네마틱 컨셉의 성공적인 시작을 위해 꼭 필요한 과정이었다고 생각합니다.</p>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">'악녀'라는 제목이 결국 누구를 가리키는가에 대한 해석이 다양합니다. 작가님은 '악녀'를 어떻게 정의하고 계신가요?</p>
+      <p class="qa-a">저는 반전이 있는 이야기를 좋아합니다. 민유정과 이화정의 시점으로 이야기를 따라가다 보면, 자연스럽게 그들을 괴롭히는 인물들이 악인처럼 보이죠. 하지만 전체를 돌아보면, 진짜 '악녀'는 그들 자신이었다는 사실을 깨닫게 됩니다. 이 지점이야말로 제가 가장 흥미롭게 느낀 부분이었습니다. 생각해보면 일상 속 대부분의 사람들은 스스로를 악인이라 생각하지 않습니다. 가해자가 기억하지 못하듯, 우리는 자신이 누군가에게 상처를 준 존재일 수도 있다는 사실을 종종 잊곤 하죠. 이 이야기는 '학교폭력'이라는 민감한 주제를 다루고 있지만, 제가 전하고자 한 핵심은 단순합니다. 결국 모든 일은 '내가 한 만큼 나에게 돌아온다'는 것. 이 작품을 통해, 각자가 그 말의 의미를 한 번쯤 곱씹어보게 되길 바랐습니다.</p>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">인테리어나 공간 연출에서 특별히 중점을 둔 부분이 있다면 무엇인가요?</p>
+      <p class="qa-a">시네마틱점의 가장 큰 강점으로 저희는 '배경 연출의 완벽함'을 꼽고 싶었습니다. 저희의 목표는 '작은 공간이든 큰 공간이든 허투루 사용하지 않는다'는 것이었습니다. 모든 공간이 스토리와 시대상에 기여할 수 있도록, 빈틈없이 밀도 높은 연출을 구현하고자 노력했습니다. 특히 테마의 시대상에 완벽히 어울리도록 건물들을 세밀하게 건축했으며, 모든 공간에 실제 사용되는 건축자재들을 활용하여 극도의 현실감과 몰입감을 제공하는 테마를 완성하는 데 중점을 두었습니다. 또한, 저희 건물은 높은 천장을 가지고 있다는 큰 장점이 있습니다. 아쉽게도 변경된 소방법으로 인해 복층 구조를 구현할 수는 없었지만, 이 시원한 개방감이야말로 플레이어분들이 마치 실제 영화 촬영 현장이나 광활한 장소에 와 있는 듯한 깊은 현장 몰입감을 느낄 수 있는 가장 강력한 무기라고 생각합니다.</p>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">경비원이 직접 행동하지 않고, 민유정과 이화정을 통해 모든 일이 벌어지게 만든 이유는 무엇인가요?</p>
+      <p class="qa-a">그는 복수를 '행동'이 아니라 '귀결'로 여긴 사람이었습니다. 단순히 해를 가하는 것은 순간의 감정일 뿐, 진정한 복수는 그들이 스스로 자신이 저지른 죄의 결과에 발을 들이게 하는 것이라고 믿었죠. 경비원은 악귀보다 무서운 것이 인간의 양심이라고 생각했습니다. 누군가의 손에 의해 심판받는 것이 아니라, 자신의 선택과 발걸음 끝에서 파멸을 맞이하는 것 — 그것이야말로 완전한 인과응보라고 여긴 겁니다.</p>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">쿠키영상에서는 과거의 한 장면이 등장합니다. 그 장면을 넣게 된 특별한 이유가 있을까요?</p>
+      <p class="qa-a">쿠키영상은 본편이 끝난 뒤, 관객을 다시 과거의 한 순간으로 되돌려 놓습니다. 유정과 화정이 조소민을 괴롭힌 뒤 복도에서 나누는 대화 장면이 등장하죠. 화정이 "왜 그녀를 싫어하냐"고 묻자, 민유정은 잠시 생각하다가 "왜 그랬더라?"라고 중얼깁니다. 저는 그 한마디에 담긴 서늘함이 관객에게 그대로 전해지길 바랐습니다. 누군가는 이유 없이 괴롭힘을 당하고, 누군가는 그 이유조차 기억하지 못합니다. 이 짧은 영상이 전하고자 한 메시지는 단순합니다 — 가해자의 기억은 쉽게 지워질 수 있어도, 피해자의 상처는 결코 사라지지 않는다는 것.</p>
+    </div>
+
+    <div class="qa-item">
+      <p class="qa-q">마지막으로, [악녀]를 관람해주신 관객 여러분께 한 말씀 부탁드립니다.</p>
+      <p class="qa-a">러시아워 시네마틱은 방탈출이라는 장르 안에서 단지 문제를 푸는 경험이 아니라, 그 안에 담긴 감정과 이야기, 그리고 기억에 남는 순간을 전하고 싶다는 마음에서 출발했습니다. 무언가 단순히 "재밌다"로 끝나는 것이 아니라, 끝난 뒤에도 문득 떠오르는 장면과 감정 — 당신이 직접 체험한 그 이야기의 흐름이 여운으로 남길 바랐습니다. 이 방탈출이라는 장르가 단순한 유흥거리를 넘어, 당신의 일상에 녹아드는 경험이 되길 바랍니다. 찾아와주셔서 진심으로 감사합니다. 여러분의 시간이 아깝지 않도록, 다음 이야기도 정성껏 준비하고 있겠습니다. 그날이 오면, 다시 한 번 당신을 영화의 주인공으로 초대하겠습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 뒤표지 (CSS 제작) -->
+<section class="back-cover">
+  <div class="back-cover-circle">
+    <span class="back-cover-circle-inner">악  녀</span>
+    <span class="back-cover-circle-sub">은화기숙학원</span>
+  </div>
+  <p class="back-cover-title">RUSHHOUR CINEMATIC</p>
+  <p class="back-copyright">
+    © Rushhour Cinematic. Designed by 최서연<br>
+    Printed in Korea / 2025
+  </p>
+</section>
+
+<script>
+  /* ── 1. 스크롤 페이드인 ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll(
+    '.char-card, .place-block, .map-img, .story-text, .story-dialogue, .story-narration, .story-quote, .detail-item, .qa-item'
+  ).forEach(el => observer.observe(el));
+
+  /* ── 2. 챕터 전환 오버레이 ── */
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:#030606;pointer-events:none;z-index:999;opacity:0;transition:opacity 0.6s ease;';
+  document.body.appendChild(overlay);
+  const chapterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { overlay.style.opacity='1'; setTimeout(()=>{ overlay.style.opacity='0'; }, 400); }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.chars-bg,.map-bg,.story-bg,.detail-bg,.qa-bg').forEach(el => chapterObserver.observe(el));
+
+  /* ── 3. 표지 패럴랙스 ── */
+  const coverImgEl = document.getElementById('coverImg');
+  window.addEventListener('scroll', () => {
+    const s = window.scrollY;
+    if (s < window.innerHeight && coverImgEl) coverImgEl.style.transform = `translateY(${s*0.28}px)`;
+  }, { passive: true });
+
+  /* ── 4. 동의 화면 ── */
+  const agreeWrap  = document.getElementById('agreeWrap');
+  const agreeCheck = document.getElementById('agreeCheck');
+  const agreeBtn   = document.getElementById('agreeBtn');
+  document.getElementById('introWrap').classList.add('hidden');
+  agreeCheck.addEventListener('change', () => agreeBtn.classList.toggle('active', agreeCheck.checked));
+  agreeBtn.addEventListener('click', () => {
+    if (!agreeCheck.checked) return;
+    agreeWrap.style.transition = 'background 0.3s ease';
+    agreeWrap.style.background = '#000';
+    setTimeout(() => {
+      agreeWrap.classList.add('hidden');
+      document.getElementById('introWrap').classList.remove('hidden');
+      const video = document.getElementById('introVideo');
+      if (video) video.play().catch(showCover);
+    }, 300);
+  });
+
+  /* ── 5. 인트로 영상 → 표지 페이드인 ── */
+  const introWrap     = document.getElementById('introWrap');
+  const introVideo    = document.getElementById('introVideo');
+  const coverScrollEl = document.getElementById('coverScroll');
+  function showCover() {
+    introWrap.classList.add('fadeout');
+    setTimeout(() => {
+      introWrap.classList.add('hidden');
+      const bo = document.getElementById('blackOverlay');
+      if (bo) bo.classList.add('hidden');
+      coverImgEl.classList.add('visible');
+      setTimeout(() => coverScrollEl.classList.add('visible'), 1600);
+    }, 1200);
+  }
+  if (introVideo) {
+    introVideo.addEventListener('ended', showCover);
+    introVideo.addEventListener('error', showCover);
+  }
+
+  /* ── 6. 뒤표지 ── */
+  const backCover = document.querySelector('.back-cover');
+  if (backCover) {
+    const bo2 = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if(e.isIntersecting){ setTimeout(()=>backCover.classList.add('visible'),400); bo2.unobserve(e.target); } });
+    }, { threshold: 0.3 });
+    bo2.observe(backCover);
+  }
+
+  /* ── 7. 목차 스크롤 스파이 ── */
+  const toc = document.getElementById('toc');
+  const tocItems = document.querySelectorAll('.toc-item, .toc-mobile-item');
+  const sections = ['sec-characters','sec-world','sec-story','sec-detail','sec-qa']
+    .map(id => document.getElementById(id)).filter(Boolean);
+
+  tocItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const t = document.getElementById(item.dataset.target);
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('tocMobile').classList.remove('open');
+      document.getElementById('tocBackdrop').classList.remove('open');
+    });
+  });
+
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.toc-item,.toc-mobile-item').forEach(el => {
+          el.classList.toggle('active', el.dataset.target === e.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(sec => tocObserver.observe(sec));
+
+  window.addEventListener('scroll', () => toc.classList.toggle('visible', window.scrollY > 300), { passive: true });
+
+  document.getElementById('tocToggle').addEventListener('click', () => {
+    document.getElementById('tocMobile').classList.toggle('open');
+    document.getElementById('tocBackdrop').classList.toggle('open');
+  });
+  document.getElementById('tocBackdrop').addEventListener('click', () => {
+    document.getElementById('tocMobile').classList.remove('open');
+    document.getElementById('tocBackdrop').classList.remove('open');
+  });
+</script>
+</body>
+</html>
